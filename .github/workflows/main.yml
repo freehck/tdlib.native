@@ -2,15 +2,8 @@
 name: Main
 on:
   push:
-    branches:
-    - master
     tags:
     - v*
-  pull_request:
-    branches:
-    - master
-  schedule:
-  - cron: 0 0 * * 1
   workflow_dispatch: 
 jobs:
   build-ubuntu-22-04-x86-64:
@@ -43,7 +36,7 @@ jobs:
     - name: Upload build result
       uses: actions/upload-artifact@v4
       with:
-        name: tdlib.native.ubuntu-22.04.x86-64
+        name: nv.tdlib.native.ubuntu-22.04.x86-64
         path: artifacts/*
   build-macos-aarch64:
     runs-on: macos-14
@@ -75,7 +68,7 @@ jobs:
     - name: Upload build result
       uses: actions/upload-artifact@v4
       with:
-        name: tdlib.native.macos.aarch64
+        name: nv.tdlib.native.macos.aarch64
         path: artifacts/*
   build-macos-x86-64:
     runs-on: macos-13
@@ -107,7 +100,7 @@ jobs:
     - name: Upload build result
       uses: actions/upload-artifact@v4
       with:
-        name: tdlib.native.macos.x86-64
+        name: nv.tdlib.native.macos.x86-64
         path: artifacts/*
   build-windows-x86-64:
     runs-on: windows-2019
@@ -136,167 +129,167 @@ jobs:
     - name: Upload build result
       uses: actions/upload-artifact@v4
       with:
-        name: tdlib.native.windows.x86-64
+        name: nv.tdlib.native.windows.x86-64
         path: artifacts/*
-  test-ubuntu-22-04-x86-64:
-    needs:
-    - build-ubuntu-22-04-x86-64
-    runs-on: ubuntu-22.04
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_NOLOGO: 1
-      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
-      PACKAGE_VERSION_BASE: 1.8.45
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        submodules: true
-    - name: Install
-      shell: pwsh
-      run: ./linux/install.ps1 -ForTests
-    - name: 'Download artifact: ubuntu-22.04.x86-64'
-      uses: actions/download-artifact@v4
-      with:
-        name: tdlib.native.ubuntu-22.04.x86-64
-        path: build/tdlib.native.linux-x64/runtimes/linux-x64/native
-    - name: Verify library dependencies
-      shell: pwsh
-      run: ./linux/Test-Dependencies.ps1 -Platform ubuntu-22.04 -PackageName tdlib.native.linux-x64
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
-    - name: Pack NuGet
-      shell: pwsh
-      run: dotnet pack tdlib.native.linux-x64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
-    - name: NuGet cache
-      uses: actions/cache@v4
-      with:
-        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
-        path: ${{ env.NUGET_PACKAGES }}
-    - name: Test
-      shell: pwsh
-      run: ./common/test.ps1 -PackageName tdlib.native.linux-x64 -NuGet $env:GITHUB_WORKSPACE/tools/nuget.exe -UseMono
-  test-macos-aarch64:
-    needs:
-    - build-macos-aarch64
-    runs-on: macos-14
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_NOLOGO: 1
-      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
-      PACKAGE_VERSION_BASE: 1.8.45
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        submodules: true
-    - name: 'Download artifact: macos.aarch64'
-      uses: actions/download-artifact@v4
-      with:
-        name: tdlib.native.macos.aarch64
-        path: build/tdlib.native.osx-arm64/runtimes/osx-arm64/native
-    - name: Verify library dependencies
-      shell: pwsh
-      run: ./macos/Test-Dependencies.ps1 -DotNetArch arm64 -PackageName tdlib.native.osx-arm64
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
-    - name: Pack NuGet
-      shell: pwsh
-      run: dotnet pack tdlib.native.osx-arm64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
-    - name: NuGet cache
-      uses: actions/cache@v4
-      with:
-        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
-        path: ${{ env.NUGET_PACKAGES }}
-    - name: Test
-      shell: pwsh
-      run: ./common/test.ps1 -PackageName tdlib.native.osx-arm64 -NuGet nuget
-  test-macos-x86-64:
-    needs:
-    - build-macos-x86-64
-    runs-on: macos-13
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_NOLOGO: 1
-      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
-      PACKAGE_VERSION_BASE: 1.8.45
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        submodules: true
-    - name: 'Download artifact: macos.x86-64'
-      uses: actions/download-artifact@v4
-      with:
-        name: tdlib.native.macos.x86-64
-        path: build/tdlib.native.osx-x64/runtimes/osx-x64/native
-    - name: Verify library dependencies
-      shell: pwsh
-      run: ./macos/Test-Dependencies.ps1 -DotNetArch x64 -PackageName tdlib.native.osx-x64
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
-    - name: Pack NuGet
-      shell: pwsh
-      run: dotnet pack tdlib.native.osx-x64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
-    - name: NuGet cache
-      uses: actions/cache@v4
-      with:
-        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
-        path: ${{ env.NUGET_PACKAGES }}
-    - name: Test
-      shell: pwsh
-      run: ./common/test.ps1 -PackageName tdlib.native.osx-x64 -NuGet nuget
-  test-windows-x86-64:
-    needs:
-    - build-windows-x86-64
-    runs-on: windows-2019
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_NOLOGO: 1
-      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
-      PACKAGE_VERSION_BASE: 1.8.45
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        submodules: true
-    - name: 'Download artifact: windows.x86-64'
-      uses: actions/download-artifact@v4
-      with:
-        name: tdlib.native.windows.x86-64
-        path: build/tdlib.native.win-x64/runtimes/win-x64/native
-    - name: Cache downloads for Windows
-      uses: actions/cache@v4
-      with:
-        key: ${{ hashFiles('windows/install.ps1') }}
-        path: build/downloads
-    - name: Install dependencies
-      shell: pwsh
-      run: ./windows/install.ps1
-    - name: Verify library dependencies
-      shell: pwsh
-      run: ./windows/Test-Dependencies.ps1
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
-    - name: Pack NuGet
-      shell: pwsh
-      run: dotnet pack tdlib.native.win-x64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
-    - name: NuGet cache
-      uses: actions/cache@v4
-      with:
-        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
-        path: ${{ env.NUGET_PACKAGES }}
-    - name: Test
-      shell: pwsh
-      run: ./common/test.ps1 -PackageName tdlib.native.win-x64 -NuGet nuget
+#  test-ubuntu-22-04-x86-64:
+#    needs:
+#    - build-ubuntu-22-04-x86-64
+#    runs-on: ubuntu-22.04
+#    env:
+#      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+#      DOTNET_NOLOGO: 1
+#      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+#      PACKAGE_VERSION_BASE: 1.8.45
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v4
+#      with:
+#        submodules: true
+#    - name: Install
+#      shell: pwsh
+#      run: ./linux/install.ps1 -ForTests
+#    - name: 'Download artifact: ubuntu-22.04.x86-64'
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: tdlib.native.ubuntu-22.04.x86-64
+#        path: build/tdlib.native.linux-x64/runtimes/linux-x64/native
+#    - name: Verify library dependencies
+#      shell: pwsh
+#      run: ./linux/Test-Dependencies.ps1 -Platform ubuntu-22.04 -PackageName tdlib.native.linux-x64
+#    - name: Set up .NET SDK
+#      uses: actions/setup-dotnet@v4
+#      with:
+#        dotnet-version: 7.0.x
+#    - name: Pack NuGet
+#      shell: pwsh
+#      run: dotnet pack tdlib.native.linux-x64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
+#    - name: NuGet cache
+#      uses: actions/cache@v4
+#      with:
+#        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
+#        path: ${{ env.NUGET_PACKAGES }}
+#    - name: Test
+#      shell: pwsh
+#      run: ./common/test.ps1 -PackageName tdlib.native.linux-x64 -NuGet $env:GITHUB_WORKSPACE/tools/nuget.exe -UseMono
+#  test-macos-aarch64:
+#    needs:
+#    - build-macos-aarch64
+#    runs-on: macos-14
+#    env:
+#      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+#      DOTNET_NOLOGO: 1
+#      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+#      PACKAGE_VERSION_BASE: 1.8.45
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v4
+#      with:
+#        submodules: true
+#    - name: 'Download artifact: macos.aarch64'
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: tdlib.native.macos.aarch64
+#        path: build/tdlib.native.osx-arm64/runtimes/osx-arm64/native
+#    - name: Verify library dependencies
+#      shell: pwsh
+#      run: ./macos/Test-Dependencies.ps1 -DotNetArch arm64 -PackageName tdlib.native.osx-arm64
+#    - name: Set up .NET SDK
+#      uses: actions/setup-dotnet@v4
+#      with:
+#        dotnet-version: 7.0.x
+#    - name: Pack NuGet
+#      shell: pwsh
+#      run: dotnet pack tdlib.native.osx-arm64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
+#    - name: NuGet cache
+#      uses: actions/cache@v4
+#      with:
+#        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
+#        path: ${{ env.NUGET_PACKAGES }}
+#    - name: Test
+#      shell: pwsh
+#      run: ./common/test.ps1 -PackageName tdlib.native.osx-arm64 -NuGet nuget
+#  test-macos-x86-64:
+#    needs:
+#    - build-macos-x86-64
+#    runs-on: macos-13
+#    env:
+#      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+#      DOTNET_NOLOGO: 1
+#      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+#      PACKAGE_VERSION_BASE: 1.8.45
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v4
+#      with:
+#        submodules: true
+#    - name: 'Download artifact: macos.x86-64'
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: tdlib.native.macos.x86-64
+#        path: build/tdlib.native.osx-x64/runtimes/osx-x64/native
+#    - name: Verify library dependencies
+#      shell: pwsh
+#      run: ./macos/Test-Dependencies.ps1 -DotNetArch x64 -PackageName tdlib.native.osx-x64
+#    - name: Set up .NET SDK
+#      uses: actions/setup-dotnet@v4
+#      with:
+#        dotnet-version: 7.0.x
+#    - name: Pack NuGet
+#      shell: pwsh
+#      run: dotnet pack tdlib.native.osx-x64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
+#    - name: NuGet cache
+#      uses: actions/cache@v4
+#      with:
+#        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
+#        path: ${{ env.NUGET_PACKAGES }}
+#    - name: Test
+#      shell: pwsh
+#      run: ./common/test.ps1 -PackageName tdlib.native.osx-x64 -NuGet nuget
+#  test-windows-x86-64:
+#    needs:
+#    - build-windows-x86-64
+#    runs-on: windows-2019
+#    env:
+#      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+#      DOTNET_NOLOGO: 1
+#      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+#      PACKAGE_VERSION_BASE: 1.8.45
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v4
+#      with:
+#        submodules: true
+#    - name: 'Download artifact: windows.x86-64'
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: tdlib.native.windows.x86-64
+#        path: build/tdlib.native.win-x64/runtimes/win-x64/native
+#    - name: Cache downloads for Windows
+#      uses: actions/cache@v4
+#      with:
+#        key: ${{ hashFiles('windows/install.ps1') }}
+#        path: build/downloads
+#    - name: Install dependencies
+#      shell: pwsh
+#      run: ./windows/install.ps1
+#    - name: Verify library dependencies
+#      shell: pwsh
+#      run: ./windows/Test-Dependencies.ps1
+#    - name: Set up .NET SDK
+#      uses: actions/setup-dotnet@v4
+#      with:
+#        dotnet-version: 7.0.x
+#    - name: Pack NuGet
+#      shell: pwsh
+#      run: dotnet pack tdlib.native.win-x64.proj -p:Version=${{ env.PACKAGE_VERSION_BASE }}-test --output build
+#    - name: NuGet cache
+#      uses: actions/cache@v4
+#      with:
+#        key: ${{ runner.os }}.nuget.${{ hashFiles('tdsharp/**/*.csproj') }}
+#        path: ${{ env.NUGET_PACKAGES }}
+#    - name: Test
+#      shell: pwsh
+#      run: ./common/test.ps1 -PackageName tdlib.native.win-x64 -NuGet nuget
   release:
     needs:
     - build-ubuntu-22-04-x86-64
@@ -314,35 +307,35 @@ jobs:
     - name: 'Download artifact: ubuntu-22.04.x86-64'
       uses: actions/download-artifact@v4
       with:
-        name: tdlib.native.ubuntu-22.04.x86-64
-        path: build/tdlib.native.linux-x64/runtimes/linux-x64/native
+        name: nv.tdlib.native.ubuntu-22.04.x86-64
+        path: build/nv.tdlib.native.linux-x64/runtimes/linux-x64/native
     - name: 'Archive artifact for platform: ubuntu-22.04.x86-64'
       shell: pwsh
-      run: Set-Location build/tdlib.native.linux-x64/runtimes/linux-x64/native && zip -r $env:GITHUB_WORKSPACE/tdlib.native.ubuntu-22.04.x86-64.zip *
+      run: Set-Location build/nv.tdlib.native.linux-x64/runtimes/linux-x64/native && zip -r $env:GITHUB_WORKSPACE/nv.tdlib.native.ubuntu-22.04.x86-64.zip *
     - name: 'Download artifact: macos.aarch64'
       uses: actions/download-artifact@v4
       with:
-        name: tdlib.native.macos.aarch64
-        path: build/tdlib.native.osx-arm64/runtimes/osx-arm64/native
+        name: nv.tdlib.native.macos.aarch64
+        path: build/nv.tdlib.native.osx-arm64/runtimes/osx-arm64/native
     - name: 'Archive artifact for platform: macos.aarch64'
       shell: pwsh
-      run: Set-Location build/tdlib.native.osx-arm64/runtimes/osx-arm64/native && zip -r $env:GITHUB_WORKSPACE/tdlib.native.macos.aarch64.zip *
+      run: Set-Location build/nv.tdlib.native.osx-arm64/runtimes/osx-arm64/native && zip -r $env:GITHUB_WORKSPACE/nv.tdlib.native.macos.aarch64.zip *
     - name: 'Download artifact: macos.x86-64'
       uses: actions/download-artifact@v4
       with:
-        name: tdlib.native.macos.x86-64
-        path: build/tdlib.native.osx-x64/runtimes/osx-x64/native
+        name: nv.tdlib.native.macos.x86-64
+        path: build/nv.tdlib.native.osx-x64/runtimes/osx-x64/native
     - name: 'Archive artifact for platform: macos.x86-64'
       shell: pwsh
-      run: Set-Location build/tdlib.native.osx-x64/runtimes/osx-x64/native && zip -r $env:GITHUB_WORKSPACE/tdlib.native.macos.x86-64.zip *
+      run: Set-Location build/nv.tdlib.native.osx-x64/runtimes/osx-x64/native && zip -r $env:GITHUB_WORKSPACE/nv.tdlib.native.macos.x86-64.zip *
     - name: 'Download artifact: windows.x86-64'
       uses: actions/download-artifact@v4
       with:
-        name: tdlib.native.windows.x86-64
-        path: build/tdlib.native.win-x64/runtimes/win-x64/native
+        name: nv.tdlib.native.windows.x86-64
+        path: build/nv.tdlib.native.win-x64/runtimes/win-x64/native
     - name: 'Archive artifact for platform: windows.x86-64'
       shell: pwsh
-      run: Set-Location build/tdlib.native.win-x64/runtimes/win-x64/native && zip -r $env:GITHUB_WORKSPACE/tdlib.native.windows.x86-64.zip *
+      run: Set-Location build/nv.tdlib.native.win-x64/runtimes/win-x64/native && zip -r $env:GITHUB_WORKSPACE/nv.tdlib.native.windows.x86-64.zip *
     - name: Set up .NET SDK
       uses: actions/setup-dotnet@v4
       with:
@@ -381,7 +374,7 @@ jobs:
     - name: Upload NuGet packages
       uses: actions/upload-artifact@v4
       with:
-        name: tdlib.nuget
+        name: nv.tdlib.nuget
         path: ./build/*.nupkg
     - if: startsWith(github.ref, 'refs/tags/v')
       id: release
@@ -398,7 +391,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.ubuntu-22.04.x86-64.zip
+        asset_name: nv.tdlib.native.ubuntu-22.04.x86-64.zip
         asset_path: ./nv.tdlib.native.ubuntu-22.04.x86-64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
@@ -408,7 +401,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.macos.aarch64.zip
+        asset_name: nv.tdlib.native.macos.aarch64.zip
         asset_path: ./nv.tdlib.native.macos.aarch64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
@@ -418,7 +411,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.macos.x86-64.zip
+        asset_name: nv.tdlib.native.macos.x86-64.zip
         asset_path: ./nv.tdlib.native.macos.x86-64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
@@ -428,75 +421,75 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.windows.x86-64.zip
+        asset_name: nv.tdlib.native.windows.x86-64.zip
         asset_path: ./nv.tdlib.native.windows.x86-64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: startsWith(github.ref, 'refs/tags/v')
-      name: 'Upload NuGet package: tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg'
+      name: 'Upload NuGet package: nv.tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg'
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
+        asset_name: nv.tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
         asset_path: ./build/nv.tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: startsWith(github.ref, 'refs/tags/v')
-      name: 'Upload NuGet package: tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg'
+      name: 'Upload NuGet package: nv.tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg'
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
+        asset_name: nv.tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
         asset_path: ./build/nv.tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: startsWith(github.ref, 'refs/tags/v')
-      name: 'Upload NuGet package: tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg'
+      name: 'Upload NuGet package: nv.tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg'
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
+        asset_name: nv.tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
         asset_path: ./build/nv.tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: startsWith(github.ref, 'refs/tags/v')
-      name: 'Upload NuGet package: tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg'
+      name: 'Upload NuGet package: nv.tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg'
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
+        asset_name: nv.tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
         asset_path: ./build/nv.tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: startsWith(github.ref, 'refs/tags/v')
-      name: 'Upload NuGet package: tdlib.native.${{ steps.version.outputs.version }}.nupkg'
+      name: 'Upload NuGet package: nv.tdlib.native.${{ steps.version.outputs.version }}.nupkg'
       uses: actions/upload-release-asset@v1
       with:
         asset_content_type: application/zip
-        asset_name: tdlib.native.${{ steps.version.outputs.version }}.nupkg
+        asset_name: nv.tdlib.native.${{ steps.version.outputs.version }}.nupkg
         asset_path: ./build/nv.tdlib.native.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-      name: Push tdlib.native.linux-x64.${{ steps.version.outputs.version }} to nuget.org
+      name: Push nv.tdlib.native.linux-x64.${{ steps.version.outputs.version }} to nuget.org
       run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-      name: Push tdlib.native.osx-arm64.${{ steps.version.outputs.version }} to nuget.org
+      name: Push nv.tdlib.native.osx-arm64.${{ steps.version.outputs.version }} to nuget.org
       run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-      name: Push tdlib.native.osx-x64.${{ steps.version.outputs.version }} to nuget.org
+      name: Push nv.tdlib.native.osx-x64.${{ steps.version.outputs.version }} to nuget.org
       run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-      name: Push tdlib.native.win-x64.${{ steps.version.outputs.version }} to nuget.org
+      name: Push nv.tdlib.native.win-x64.${{ steps.version.outputs.version }} to nuget.org
       run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-      name: Push tdlib.native.${{ steps.version.outputs.version }} to nuget.org
+      name: Push nv.tdlib.native.${{ steps.version.outputs.version }} to nuget.org
       run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.${{ steps.version.outputs.version }}.nupkg
   verify-encoding:
     runs-on: ubuntu-latest
