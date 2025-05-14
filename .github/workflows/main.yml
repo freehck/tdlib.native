@@ -399,7 +399,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.ubuntu-22.04.x86-64.zip
-        asset_path: ./tdlib.native.ubuntu-22.04.x86-64.zip
+        asset_path: ./nv.tdlib.native.ubuntu-22.04.x86-64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -409,7 +409,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.macos.aarch64.zip
-        asset_path: ./tdlib.native.macos.aarch64.zip
+        asset_path: ./nv.tdlib.native.macos.aarch64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -419,7 +419,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.macos.x86-64.zip
-        asset_path: ./tdlib.native.macos.x86-64.zip
+        asset_path: ./nv.tdlib.native.macos.x86-64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -429,7 +429,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.windows.x86-64.zip
-        asset_path: ./tdlib.native.windows.x86-64.zip
+        asset_path: ./nv.tdlib.native.windows.x86-64.zip
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -439,7 +439,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
-        asset_path: ./build/tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
+        asset_path: ./build/nv.tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -449,7 +449,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
-        asset_path: ./build/tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
+        asset_path: ./build/nv.tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -459,7 +459,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
-        asset_path: ./build/tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
+        asset_path: ./build/nv.tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -469,7 +469,7 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
-        asset_path: ./build/tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
+        asset_path: ./build/nv.tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -479,25 +479,25 @@ jobs:
       with:
         asset_content_type: application/zip
         asset_name: tdlib.native.${{ steps.version.outputs.version }}.nupkg
-        asset_path: ./build/tdlib.native.${{ steps.version.outputs.version }}.nupkg
+        asset_path: ./build/nv.tdlib.native.${{ steps.version.outputs.version }}.nupkg
         upload_url: ${{ steps.release.outputs.upload_url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       name: Push tdlib.native.linux-x64.${{ steps.version.outputs.version }} to nuget.org
-      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
+      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.linux-x64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       name: Push tdlib.native.osx-arm64.${{ steps.version.outputs.version }} to nuget.org
-      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
+      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.osx-arm64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       name: Push tdlib.native.osx-x64.${{ steps.version.outputs.version }} to nuget.org
-      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
+      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.osx-x64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       name: Push tdlib.native.win-x64.${{ steps.version.outputs.version }} to nuget.org
-      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
+      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.win-x64.${{ steps.version.outputs.version }}.nupkg
     - if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       name: Push tdlib.native.${{ steps.version.outputs.version }} to nuget.org
-      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/tdlib.native.${{ steps.version.outputs.version }}.nupkg
+      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_KEY }} ./build/nv.tdlib.native.${{ steps.version.outputs.version }}.nupkg
   verify-encoding:
     runs-on: ubuntu-latest
     steps:
