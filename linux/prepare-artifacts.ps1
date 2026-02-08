@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2018-2025 tdlib.native contributors <https://github.com/ForNeVeR/tdlib.native>
+#
+# SPDX-License-Identifier: BSL-1.0
+
 param (
     [string] $BuildRoot = "$PSScriptRoot/../build",
     [string] $InstallPrefix = "$BuildRoot/install",
@@ -13,7 +17,7 @@ if ($SkipUpToDateCheck -or !$(& $CheckUpToDateScript)) {
     if (!(Test-Path -LiteralPath $TargetLocation -Type Container)) {
         New-Item -Type Directory $TargetLocation
     }
-    Copy-Item "$InstallPrefix/lib/*" -Exclude '*.a' $TargetLocation
+    Copy-Item "$InstallPrefix/lib/*" -Exclude '*.a', 'libtdjson.so.*' $TargetLocation
     & $CheckUpToDateScript -GenerateResultKey
 } else {
     Write-Host 'The build result is up to date.'

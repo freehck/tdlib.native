@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019-2025 tdlib.native contributors <https://github.com/ForNeVeR/tdlib.native>
+#
+# SPDX-License-Identifier: BSL-1.0
+
 param (
     [string] $BuildRoot = "$PSScriptRoot/../build",
     [string] $PackageSource = "$BuildRoot/../build/nuget/",
@@ -7,9 +11,6 @@ param (
     [Parameter(Mandatory = $true)]
     [string] $PackageName,
 
-    [string] $NuGet = 'NuGet.exe',
-    [switch] $UseMono,
-    [string] $Mono = 'mono',
     [string] $dotnet = 'dotnet'
 )
 
@@ -19,16 +20,14 @@ Set-StrictMode -Version Latest
 New-Item -Type Directory $PackageSource -ErrorAction Ignore
 $package = Get-Item $BuildRoot/*.nupkg
 
-Write-Output "Adding a package $package into NuGet source $PackageSource"
-if ($UseMono) {
-    & $Mono $NuGet add $package -Source $PackageSource
-} else {
-    & $NuGet add $package -Source $PackageSource
-}
-if (!$?) { throw 'Cannot add a NuGet package into source' }
+Write-Output "Copying the package $package into NuGet source $PackageSource"
+Copy-Item $package $PackageSource
 
 Push-Location "$TdSharpRoot/$TdSharpTestProjectName"
 try {
+    Write-Output 'Removing the global.json file of the submodule to disable its override by the submodule…'
+    Remove-Item "$TdSharpRoot/global.json"
+
     Write-Output "Removing a package $BasePackageName from the project $TdSharpTestProjectName"
     & $dotnet remove "$TdSharpTestProjectName.csproj" package $BasePackageName
     if (!$?) { throw 'Cannot uninstall package from the test project' }

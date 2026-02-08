@@ -3,6 +3,8 @@
     "extends": [
         "config:recommended"
     ],
+    "automerge": true,
+    "automergeType": "branch",
     "packageRules": [
         {
             "matchDatasources": ["github-runners"],
@@ -11,12 +13,37 @@
     ],
     "customManagers": [
         {
+            "description": "Update the packages in F# scripts.",
+            "customType": "regex",
+            "managerFilePatterns": [
+                "*.fsx"
+            ],
+            "matchStrings": [
+                "#r \"nuget: (?<depName>.+), (?<currentValue>\\S+)\""
+            ],
+            "datasourceTemplate": "nuget"
+        },
+        {
             "customType": "regex",
             "datasourceTemplate": "nuget",
             "fileMatch": "\\.proj$",
             "matchStrings": [
                 "Sdk=\"(?<packageName>.+?)/(?<currentValue>.+?)\""
             ]
+        },
+        {
+            "description": "Update the VerifyEncoding PowerShell module.",
+            "customType": "regex",
+            "managerFilePatterns": [
+                "CONTRIBUTING.md",
+                ".github/workflows/*.yml",
+                "github-actions.fsx"
+            ],
+            "matchStrings": [
+                "Install-Module (?<depName>\\S+?) -Repository PSGallery -RequiredVersion (?<currentValue>\\S+)"
+            ],
+            "datasourceTemplate": "nuget",
+            "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
         }
     ]
 }

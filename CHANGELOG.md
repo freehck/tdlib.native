@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022-2026 tdlib.native contributors <https://github.com/ForNeVeR/tdlib.native>
+
+SPDX-License-Identifier: BSL-1.0
+-->
+
 Changelog
 =========
 
@@ -5,9 +11,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [1.8.60] - 2026-01-10
+### Changed
+- Update to [TDLib v1.8.60](https://github.com/ForNeVeR/tdlib-versioned/releases/tag/tdlib%2Fv1.8.60).
+
+## [1.8.59] - 2025-12-29
+### Changed
+- Update to [TDLib v1.8.59](https://github.com/ForNeVeR/tdlib-versioned/releases/tag/tdlib%2Fv1.8.59).
+
+## [1.8.58] - 2025-12-07
+### Changed
+- Update to [TDLib v1.8.58](https://github.com/ForNeVeR/tdlib-versioned/releases/tag/tdlib%2Fv1.8.58).
+
+## [1.8.56.1] - 2025-11-16
 ### Removed
 - **(Breaking change!)** The package for Ubuntu 20.04 (OpenSSL v1.1) is no longer maintained nor updated (because [the corresponding GitHub runner is no longer available](https://github.com/actions/runner-images/issues/11101)).
+- [#132](https://github.com/ForNeVeR/tdlib.native/issues/132): removed a duplicated file `libtdjson.so.1.8.45` from the Linux packages. Only the normal `.so` now remains. Thanks to @Jackhammer88!
+
+### Added
+- New AArch64 packages for Windows and Linux (Ubuntu-22.04-based).
+
+### Changed
+- Update to [TDLib v1.8.56.1](https://github.com/ForNeVeR/tdlib-versioned/releases/tag/tdlib%2Fv1.8.56.1).
+- x86-64 builds for macOS are now built against macOS 15, not macOS 13.
 
 ## [1.8.45] - 2025-02-14
 ### Changed
@@ -111,4 +137,8 @@ Initial release supporting TDLib v1.2.0.
 [1.8.21.2]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.21.1...v1.8.21.2
 [1.8.29]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.21.2...v1.8.29
 [1.8.45]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.29...v1.8.45
-[Unreleased]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.45...HEAD
+[1.8.56.1]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.45...v1.8.56.1
+[1.8.58]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.56.1...v1.8.58
+[1.8.59]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.58...v1.8.59
+[1.8.60]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.59...v1.8.60
+[Unreleased]: https://github.com/ForNeVeR/tdlib.native/compare/v1.8.60...HEAD

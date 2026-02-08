@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024-2025 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: BSL-1.0
+
 param (
     [string] $RepoRoot = "$PSScriptRoot/..",
     [string] $RepoDirectory = "$RepoRoot/td",
@@ -6,7 +10,7 @@ param (
     [switch] $GenerateResultKey,
     [string] $CacheKeyFile = "$RepoRoot/.github/cache-key.json",
     [string] $ResultKeyFile = "$ArtifactsDirectory/cache-key.json",
-    [string] $CacheVersion = 'v3'
+    [string] $CacheVersion = 'v7'
 )
 
 $ErrorActionPreference = 'Stop'

@@ -1,9 +1,16 @@
+# SPDX-FileCopyrightText: 2022-2025 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: BSL-1.0
+
 param (
+    [Parameter(Mandatory = $true)]
+    [string] $DotNetArch,
+
     [string] $Dependencies = "$PSScriptRoot/../build/tools/dependencies/Dependencies.exe",
 
-    [string] $Package = "$PSScriptRoot/../build/nv.tdlib.native.win-x64/runtimes/win-x64/native",
-    [string] $GoldFile = "$PSScriptRoot/../windows/libraries.gold.txt",
-    [string] $ResultFile = "$PSScriptRoot/../windows/libraries.temp.txt",
+    [string] $Package = "$PSScriptRoot/../build/nv.tdlib.native.win-$DotNetArch/runtimes/win-$DotNetArch/native",
+    [string] $GoldFile = "$PSScriptRoot/../windows/libraries.$DotNetArch.gold.txt",
+    [string] $ResultFile = "$PSScriptRoot/../windows/libraries.$DotNetArch.temp.txt",
     [switch] $GenerateGold
 )
 
@@ -36,7 +43,7 @@ if ($GenerateGold) {
     $goldContent = Get-Content -Raw $GoldFile
     $tempContent = Get-Content -Raw $ResultFile
     if ($goldContent -ne $tempContent) {
-        Write-Output "Current contents are following:`n"
+        Write-Output "Expected contents are following:`n"
         Write-Output $tempContent
         throw "File contents are not equal: $GoldFile and $ResultFile"
     }

@@ -1,11 +1,17 @@
+# SPDX-FileCopyrightText: 2024-2025 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: BSL-1.0
+
 param (
     [Parameter(Mandatory = $true)]
     [string] $Platform,
     [Parameter(Mandatory = $true)]
+    [string] $DotNetArch,
+    [Parameter(Mandatory = $true)]
     [string] $PackageName,
     [string] $RepoRoot = "$PSScriptRoot/..",
-    [string] $Package = "$RepoRoot/build/$PackageName/runtimes/linux-x64/native",
-    [string] $GoldFile = "$RepoRoot/linux/libraries.$Platform.gold.txt",
+    [string] $Package = "$RepoRoot/build/$PackageName/runtimes/linux-$DotNetArch/native",
+    [string] $GoldFile = "$RepoRoot/linux/libraries.$Platform.$DotNetArch.gold.txt",
     [string] $ResultFile = "$RepoRoot/linux/libraries.temp.txt",
     [switch] $GenerateGold
 )
@@ -45,7 +51,7 @@ if ($GenerateGold) {
     $goldContent = Get-Content -Raw $GoldFile
     $tempContent = Get-Content -Raw $ResultFile
     if ($goldContent -ne $tempContent) {
-        Write-Output "Current contents are following:`n"
+        Write-Output "Expected contents are following:`n"
         Write-Output $tempContent
         throw "File contents are not equal: $GoldFile and $ResultFile"
     }

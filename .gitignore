@@ -1,7 +1,17 @@
-/.idea/
+# SPDX-FileCopyrightText: 2018-2025 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: BSL-1.0
+
 /build/
 
 bin/
 obj/
 
 *.temp.txt
+
+# Rider stuff:
+/.idea/
+*.user
+
+# NuGet package cache used on CI:
+/.github/nuget-packages/

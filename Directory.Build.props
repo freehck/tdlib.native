@@ -1,15 +1,27 @@
+<!--
+SPDX-FileCopyrightText: 2018-2026 tdlib.native contributors <https://github.com/ForNeVeR/tdlib.native>
+
+SPDX-License-Identifier: BSL-1.0
+-->
+
 <Project>
-    <PropertyGroup>
+    <PropertyGroup Label="Packaging">
+        <!-- REUSE-IgnoreStart -->
+        <VersionPrefix>1.8.60</VersionPrefix>
         <PackageLicenseExpression>BSL-1.0</PackageLicenseExpression>
-        <Copyright>2025 tdlib.native contributors</Copyright>
+        <Copyright>
+            2018-2026 TDLib authors,
+            2018-2026 tdlib.native contributors
+        </Copyright>
         <PackageProjectUrl>https://github.com/ForNeVeR/tdlib.native</PackageProjectUrl>
         <Description>NuGet packaging for tdlib: Telegram client library.</Description>
         <PackageTags>telegram</PackageTags>
+        <!-- REUSE-IgnoreEnd -->
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ChangelogAutomation.MSBuild" Version="3.0.3" PrivateAssets="All" />
-        <Content Include="LICENSE_1_0.txt" PackagePath="/" />
+        <PackageReference Include="ChangelogAutomation.MSBuild" Version="3.0.5" PrivateAssets="All" />
+        <Content Include="LICENSE.txt" PackagePath="/" />
         <Content Include="README.md" PackagePath="/" />
         <Content Include="CHANGELOG.md" PackagePath="/" />
     </ItemGroup>

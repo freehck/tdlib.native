@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+SPDX-FileCopyrightText: 2018-2025 tdlib.native contributors <https://github.com/ForNeVeR/tdlib.native>
+
+SPDX-License-Identifier: BSL-1.0
+-->
+
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
         <id>nv.tdlib.native</id>
@@ -13,15 +20,17 @@
         <copyright>$copyright$</copyright>
         <tags>$tags$</tags>
         <dependencies>
+            <dependency id="nv.tdlib.native.linux-arm64" version="$version$" />
             <dependency id="nv.tdlib.native.linux-x64" version="$version$" />
             <dependency id="nv.tdlib.native.osx-arm64" version="$version$" />
             <dependency id="nv.tdlib.native.osx-x64" version="$version$" />
+            <dependency id="nv.tdlib.native.win-arm64" version="$version$" />
             <dependency id="nv.tdlib.native.win-x64" version="$version$" />
         </dependencies>
     </metadata>
     <files>
         <file src="README.md" />
         <file src="CHANGELOG.md" />
-        <file src="LICENSE_1_0.txt" />
+        <file src="LICENSE.txt" />
     </files>
 </package>
